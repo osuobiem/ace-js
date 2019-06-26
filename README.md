@@ -1,1 +1,1 @@
-Laravel-like mini-framework for Node.js
+MVC mini-ORM (Object Relational Mapper) based on Javascript
