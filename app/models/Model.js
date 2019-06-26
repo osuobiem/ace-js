@@ -6,8 +6,6 @@ class Model {
     this.query = ''
     this.values = []
     this.id = 0
-
-    this.date = new Date()
   }
 
   async run () {
@@ -21,19 +19,28 @@ class Model {
     }
   }
 
-  select (field, table = this.table) {
+  /**
+   * Get data from database
+   * @param {String, Array} field //data field/column to select
+   */
+  select (field) {
     let options = {
       field: field,
       table: table
     }
-    if (db.select(options).status === false) {
-      return { status: false, message: 'Database Error!' }
-    } else {
-      this.reset().query = db.select(options).query
-      return this
-    }
+
+    this.reset().query = db.select(options).query
+    return this
   }
 
+  /**
+   * Insert data into database
+   * @param {Object} options - has the form
+   * {
+   *   field: single_field_string | [field1, field2, ...],
+   *   value: signle_value | [value1, value2, ...]
+   * }
+   */
   async insert (options) {
     this.setTableName(options)
 
@@ -49,10 +56,18 @@ class Model {
         this.values.push(options.value)
       }
 
-      return await this.run().insertId
+      return await {
+        status: true,
+        data: this.run().insertId
+      }
     }
   }
 
+  /**
+   * Update data in database
+   * @param {String} field //data field/column to update
+   * @param {*} value //value to be used for update
+   */
   update (field, value) {
     let options = {
       field: field,
@@ -75,9 +90,15 @@ class Model {
     }
   }
 
-  where (key, value, cond = '=') {
+  /**
+   * Append optional WHERE clause for specificity
+   * @param {String} field //data field/column
+   * @param {*} value //data value
+   * @param {*} cond //condition = (default), >, <, !=, <=, =>
+   */
+  where (field, value, cond = '=') {
     let options = {
-      key: key,
+      field: field,
       condition: cond,
       value: value
     }
@@ -88,6 +109,12 @@ class Model {
     return this
   }
 
+  /**
+   * Append optional AND for specificity
+   * @param {String} field //data field/column
+   * @param {*} value //data value
+   * @param {*} cond //condition = (default), >, <, !=, <=, =>
+   */
   and (key, value, cond = '=') {
     let options = {
       key: key,
@@ -101,6 +128,12 @@ class Model {
     return this
   }
 
+  /**
+   * Append optional OR for specificity
+   * @param {String} field //data field/column
+   * @param {*} value //data value
+   * @param {*} cond //condition; = (default), >, <, !=, <=, =>
+   */
   or (key, value, cond = '=') {
     let options = {
       key: key,
@@ -114,8 +147,13 @@ class Model {
     return this
   }
 
-  orderBy (key, order) {
-    this.query += db.orderBy({ field: key, order: order })
+  /**
+   * Append optional ORDER BY to specify result order
+   * @param {String} field //data field/column
+   * @param {String} order //result order; ASC (default), DESC
+   */
+  orderBy (field, order) {
+    this.query += db.orderBy({ field: field, order: order })
 
     return this
   }
