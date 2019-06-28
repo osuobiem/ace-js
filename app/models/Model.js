@@ -251,7 +251,7 @@ class Model {
   }
 
   /**
-   * Create a on-to-many relationship
+   * Create a one-to-many relationship
    * between this table and a child table
    * @param {Object} child //child object
    */
