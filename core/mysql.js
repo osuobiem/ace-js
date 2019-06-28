@@ -243,13 +243,17 @@ class MySQL {
    * @param {Object} options - has the form
    * {
    *  table: table_name,
+   *  id: record_id
    * }
    */
   delete (options) {
-    return {
-      status: true,
-      query: `DELETE FROM ${options.table} `
+    let query = ''
+    if (options.id === 0) {
+      query = `DELETE FROM ${options.table} WHERE id = ${options.id}`
+    } else {
+      query = `DELETE FROM ${options.table} WHERE id = ${options.id}`
     }
+    return query
   }
 
   /**

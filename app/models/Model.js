@@ -6,6 +6,9 @@ class Model {
     this.query = ''
     this.values = []
     this.id = 0
+    this.child = {}
+    this.parent = {}
+    this.grandchild = {}
   }
 
   async run () {
@@ -158,6 +161,10 @@ class Model {
     return this
   }
 
+  /**
+   * Fetch db data after query building
+   * @param {number} num //specify number of records tha should be fetched
+   */
   async get (num = 0) {
     if (num > 0) {
       this.query += db.limit(num)
@@ -165,7 +172,11 @@ class Model {
     return await this.run()
   }
 
-  async all (feedback) {
+  /**
+   * Fetch all db data from a specified table
+   * @param {number} num //specify number of records tha should be fetched
+   */
+  async all () {
     let options = {
       table: this.table,
       field: '*'
@@ -174,9 +185,14 @@ class Model {
     return await this.run()
   }
 
-  delete () {
+  /**
+   * Delete
+   * @param {number} num //specify number of records tha should be fetched
+   */
+  delete (id = this.id) {
     let options = {
-      table: this.table
+      table: this.table,
+      id: id
     }
     if (db.delete(options).status === false) {
       return { status: false, message: 'Database Error!' }
@@ -187,26 +203,34 @@ class Model {
     }
   }
 
+  // Reset query variable, and values array
   reset () {
     this.query = ''
     this.values = []
     return this
   }
 
+  // Get total number of fetched records
   async count () {
     return await this.run().length
   }
 
+  // Check if a specific database record exists
   async exists () {
     const results = await this.count()
     return !(results < 1)
   }
 
+  // Append table name to options object
   setTableName (options) {
     return (options.table = this.table)
   }
 
-  async find (id, feedback) {
+  /**
+   * Fetch single record using its id
+   * @param {number} id
+   */
+  async find (id) {
     let ins = this
     this.select('*') + this.where('id', id)
     const results = await this.run()
@@ -216,54 +240,24 @@ class Model {
     return results
   }
 
-  hasMany (child, feedback, key = this.id) {
-    this.reset()
-    let parent = this.tablesMapper(child)
-    if (key === 0) {
-      return feedback({
-        status: false,
-        message: 'Invalid object: Use find(id) before this'
-      })
-    } else {
-      this.select('*', child) + this.where(parent, key)
-      this.run(function (results) {
-        return feedback(results)
-      })
-    }
+  /**
+   * Create a many-to-one relationship
+   * between this table and a perent table
+   * @param {Object} parent //parent object
+   */
+  belongsTo (parent) {
+    this.parent = new parent()
+    return this.parent
   }
 
-  belongsTo (parent, feedback, key = this.id) {
-    this.reset()
-    if (key === 0) {
-      return feedback({
-        status: false,
-        message: 'Invalid object: Use find(id) before this'
-      })
-    } else {
-      let ins = this
-      this.find(key, function (results) {
-        if (results.length > 0) {
-          results.forEach(element => {
-            ins.reset()
-            ins.select('*', parent) +
-              ins.where('id', element[ins.tablesMapper(parent)])
-            ins.run(function (res) {
-              return feedback(res)
-            })
-          })
-        }
-      })
-    }
-  }
-
-  tablesMapper (table) {
-    const tables = {
-      lgas: 'state_id',
-      sub_categories: 'category_id',
-      categories: 'category_id',
-      states: 'state_id'
-    }
-    return tables[table]
+  /**
+   * Create a on-to-many relationship
+   * between this table and a child table
+   * @param {Object} child //child object
+   */
+  hasMany (child) {
+    this.child = new child()
+    return this.child
   }
 }
 
