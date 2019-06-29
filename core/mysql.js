@@ -59,6 +59,8 @@ class MySQL {
    * {
    *  table: table_name,
    *  field: single_field_string | [field1, field2, ...],
+   *  extend: single_string,
+   *  ex_object: Object
    * }
    */
   select (options) {
@@ -66,11 +68,20 @@ class MySQL {
       options.field = options.field.toString()
     }
 
+    let query =
+      options.extend === 'none'
+        ? `SELECT ${options.field} FROM ${config.db.database}.${options.table}`
+        : options.extend === 'child'
+          ? `SELECT ${options.field} FROM ${config.db.database}.${
+            options.ex_object.table
+          } WHERE ${options.table}_id = ?`
+          : `SELECT ${options.field} FROM ${config.db.database}.${
+            options.ex_object.table
+          } WHERE id = ?`
+
     return {
       status: true,
-      query: `SELECT ${options.field} FROM ${config.db.database}.${
-        options.table
-      }`
+      query: query
     }
   }
 

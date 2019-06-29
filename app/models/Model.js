@@ -1,14 +1,16 @@
 const db = require('../../core/db')
 
 class Model {
-  constructor (table) {
+  constructor (table, table_singular) {
     this.table = table
+    this.table_singular = table_singular
+    this.table_backup = ''
     this.query = ''
     this.values = []
     this.id = 0
     this.child = {}
     this.parent = {}
-    this.grandchild = {}
+    this.extend = 'none'
   }
 
   async run () {
@@ -29,9 +31,18 @@ class Model {
   select (field) {
     let options = {
       field: field,
-      table: table
+      table: this.extend === 'child' ? this.table_singular : this.table,
+      extend: this.extend,
+      ex_object:
+        this.extend === 'none'
+          ? {}
+          : this.extend === 'parent'
+            ? this.parent
+            : this.child
     }
-
+    if (extend === 'child') {
+      this.values.push(this.id)
+    }
     this.reset().query = db.select(options).query
     return this
   }
@@ -98,12 +109,20 @@ class Model {
    * @param {String} field //data field/column
    * @param {*} value //data value
    * @param {*} cond //condition = (default), >, <, !=, <=, =>
+   * Note => Do not use with relationships
    */
   where (field, value, cond = '=') {
     let options = {
       field: field,
       condition: cond,
-      value: value
+      value: value,
+      extend: this.extend,
+      ex_object:
+        this.extend === 'none'
+          ? {}
+          : this.extend === 'parent'
+            ? this.parent
+            : this.child
     }
 
     this.query += db.where(options).query
@@ -178,7 +197,11 @@ class Model {
    */
   async all () {
     let options = {
-      table: this.table,
+      table: this.hasParent()
+        ? this.parent.table
+        : this.hasChild()
+          ? this.child.name
+          : this.table,
       field: '*'
     }
     this.reset().query = db.select(options).query
@@ -186,8 +209,8 @@ class Model {
   }
 
   /**
-   * Delete
-   * @param {number} num //specify number of records tha should be fetched
+   * Delete specified record
+   * @param {number} id
    */
   delete (id = this.id) {
     let options = {
@@ -247,17 +270,36 @@ class Model {
    */
   belongsTo (parent) {
     this.parent = new parent()
-    return this.parent
+    this.extend = 'parent'
+    return this
   }
 
   /**
    * Create a one-to-many relationship
    * between this table and a child table
    * @param {Object} child //child object
+   * Note => You must use find before using this function
    */
   hasMany (child) {
     this.child = new child()
-    return this.child
+    this.extend = 'child'
+    return this
+  }
+
+  /**
+   * Create a many-to-one relationship
+   * between this table and a parent table
+   * @param {Object} parent //parent object
+   * Note => You must use find before using this function
+   */
+  hasParent (parent) {
+    this.parent = new parent()
+    this.extend = 'parent'
+    return this
+  }
+
+  hasChild () {
+    return !(this.child === {})
   }
 }
 
