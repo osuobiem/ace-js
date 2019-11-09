@@ -1,1 +1,1 @@
-MVC mini-ORM (Object Relational Mapper) based on Javascript
+MVC mini-ORM (Object Relational Mapper) based on Node.js
