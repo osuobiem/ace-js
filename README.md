@@ -1,1 +1,1 @@
-Lightweight MVC mini-ORM for Node.js
+Lightweight MVC mini-ORM for Node.js.
