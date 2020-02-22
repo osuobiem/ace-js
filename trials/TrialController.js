@@ -1,8 +1,20 @@
-const Model = require("../app/models/PModel");
+const Model = require("../app/models/User");
 
 class TrialController {
-  get() {
+  constructor() {
+    let f = {
+      fields: ["id", "firstname", "lastname"],
+      id: 3,
+      $and: {
+        firstname: "Gabriel",
+        $or: {
+          lastname: "tanz"
+        }
+      }
+    };
     let d = new Model();
-    d.get();
+    console.log(d.get(f));
   }
 }
+
+module.exports = TrialController;

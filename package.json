@@ -1,6 +1,6 @@
 {
   "name": "ace-js",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Lightweight MVC mini-ORM for Node.js.",
   "main": "index.js",
   "scripts": {
@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/osuobiem/ace-js#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "nodemon": "^2.0.2"
   }
 }

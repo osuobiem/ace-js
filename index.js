@@ -1,5 +1,10 @@
-const Controller = require("trials/TrialController");
+const Controller = require("./trials/TrialController");
+const app = require("express")();
+const http = require("http").createServer(app);
 
 let obj = new Controller();
 
-obj.get();
+// Start application server
+http.listen(3000, () => {
+  console.log(`Server is listening on port 3000`);
+});
