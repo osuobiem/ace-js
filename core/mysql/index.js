@@ -1,6 +1,6 @@
 "use strict";
 
-const CORE = require("./mysql-core");
+const CORE = require("./core");
 
 class MySQL {
   query = "";

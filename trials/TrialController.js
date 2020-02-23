@@ -1,4 +1,4 @@
-const Model = require("../app/models/User");
+const Model = require("../core/model");
 
 class TrialController {
   constructor() {

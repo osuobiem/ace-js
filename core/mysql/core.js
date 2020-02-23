@@ -4,7 +4,7 @@ const mysql = require("mysql");
 
 const config = require("../config/database");
 
-class MySQL_CORE {
+class CORE {
   db;
 
   constructor() {
@@ -24,4 +24,4 @@ class MySQL_CORE {
   }
 }
 
-module.exports = MySQL_CORE;
+module.exports = CORE;

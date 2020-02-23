@@ -1,14 +1,12 @@
-const MySQL = require("../../core/mysql/mysql");
+"use strict";
 
-class User extends MySQL {
-  attr = {
-    id: "-",
-    firstname: "-",
-    lastname: "-"
-  };
+const Database = require("../db");
 
-  constructor() {
-    super("users");
+class Model extends Database {
+  attr = {};
+
+  constructor(table) {
+    super(table);
   }
 
   get(query = {}) {
@@ -40,4 +38,4 @@ class User extends MySQL {
   }
 }
 
-module.exports = User;
+module.exports = Model;
