@@ -1,4 +1,4 @@
-const MySQL = require("../../core/mysql");
+const MySQL = require("../../core/mysql/mysql");
 
 class User extends MySQL {
   attr = {

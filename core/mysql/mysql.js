@@ -1,5 +1,7 @@
 "use strict";
 
+const CORE = require("./mysql-core");
+
 class MySQL {
   query = "";
   table;
@@ -20,6 +22,9 @@ class MySQL {
 
   constructor(table) {
     this.table = table;
+
+    let mysql_core = new CORE();
+    mysql_core.connect();
   }
 
   /**
