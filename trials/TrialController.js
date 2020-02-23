@@ -2,19 +2,13 @@ const Model = require("../app/models/User");
 
 class TrialController {
   constructor() {
-    let f = {
-      fields: ["id", "firstname", "lastname"],
-      id: 3,
-      $and: {
-        firstname: "Gabriel"
-      },
-      $ord: {
-        lastname: "ASC"
-      },
-      $lim: 2
-    };
     let d = new Model();
-    console.log(d.get(f));
+
+    d.attribs.id = 5;
+    d.attribs.firstname = "Gabriel";
+    d.attribs.lastname = "Osuobiem";
+
+    console.log(d.add());
   }
 }
 
