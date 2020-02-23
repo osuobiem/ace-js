@@ -123,6 +123,22 @@ class MySQL {
   }
 
   /**
+   * Compose and handle data removal related queries
+   *
+   * @param {object} query
+   */
+  remove(query = {}) {
+    this.query = `DELETE FROM ${this.table}`;
+
+    if (this.count(query) > 0) {
+      this.query += " WHERE";
+      this.traverse(query);
+    }
+
+    return this.query;
+  }
+
+  /**
    * Traverse through query object so as to compose query
    * @param {object} obj
    */
@@ -144,6 +160,8 @@ class MySQL {
             if (value == "ASC" || value == "DESC") {
               this.query += ` ${key} ${value}`;
             } else {
+              value =
+                this.getType(value) == "number" ? `${value}` : `'${value}'`;
               this.query += ` ${key} = ${value}`;
             }
           }

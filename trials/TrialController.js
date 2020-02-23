@@ -4,11 +4,16 @@ class TrialController {
   constructor() {
     let d = new Model();
 
-    d.attr.id = 5;
-    d.attr.firstname = "Gabriel";
-    d.attr.lastname = "Osuobiem";
+    let a = {
+      firstname: "Gabriel",
+      $and: {
+        id: {
+          $lte: 34
+        }
+      }
+    };
 
-    console.log(d.add());
+    console.log(d.delete(a));
   }
 }
 

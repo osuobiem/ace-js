@@ -23,6 +23,10 @@ class User extends MySQL {
     return this.modify(this.filter(this.attr), query);
   }
 
+  delete(query = {}) {
+    return this.remove(query);
+  }
+
   filter() {
     let new_attr = {};
 
