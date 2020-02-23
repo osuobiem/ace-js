@@ -1,24 +1,36 @@
-const Parser = require("../../core/mysql");
+const MySQL = require("../../core/mysql");
 
-class User {
-  table = "users";
+class User extends MySQL {
   attribs = {
-    id: "",
-    firstname: "",
-    lastname: ""
+    id: "-",
+    firstname: "-",
+    lastname: "-"
   };
 
+  constructor() {
+    super("users");
+  }
+
   get(obj = {}) {
-    obj.table = this.table;
-    let p = new Parser(obj);
-    return p.get();
+    return this.read(obj);
   }
 
   add() {
-    let obj = this.attribs;
-    obj.table = this.table;
-    let p = new Parser(obj);
-    return p.add();
+    return this.create(filter(this.attribs));
+  }
+
+  update() {}
+
+  filter() {
+    let new_attribs = {};
+
+    Object.entries(this.attribs).forEach(([key, value]) => {
+      if (value != "-") {
+        new_attribs[key] = value;
+      }
+    });
+
+    return new_attribs;
   }
 }
 

@@ -8,7 +8,7 @@ class TrialController {
     d.attribs.firstname = "Gabriel";
     d.attribs.lastname = "Osuobiem";
 
-    console.log(d.add());
+    console.log(d.get());
   }
 }
 

@@ -3,7 +3,6 @@
 class MySQL {
   query = "";
   table;
-  query_obj;
 
   // Reserved keywords to be used in query objects
   reserved = {
@@ -19,26 +18,14 @@ class MySQL {
     $ord: "ORDER BY"
   };
 
-  constructor(obj) {
-    this.setTable(obj);
-  }
-
-  /**
-   * Set database table and remove the element for query object
-   * @param {object} obj
-   */
-  setTable(obj) {
-    this.table = obj.table;
-    delete obj.table;
-    this.query_obj = obj;
+  constructor(table) {
+    this.table = table;
   }
 
   /**
    * Compose and handle data retrieval related queries
    */
-  get() {
-    let query_object = this.query_obj;
-
+  read(query_object = {}) {
     if (this.count(query_object) < 1) {
       this.query = `SELECT * FROM ${this.table}`;
     } else {
@@ -69,8 +56,7 @@ class MySQL {
     return this.query;
   }
 
-  add() {
-    let query_object = this.query_obj;
+  create(query_object) {
     let c = 1;
 
     this.query = `INSERT INTO ${this.table} `;
