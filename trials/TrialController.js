@@ -4,11 +4,11 @@ class TrialController {
   constructor() {
     let d = new Model();
 
-    d.attribs.id = 5;
-    d.attribs.firstname = "Gabriel";
-    d.attribs.lastname = "Osuobiem";
+    d.attr.id = 5;
+    d.attr.firstname = "Gabriel";
+    d.attr.lastname = "Osuobiem";
 
-    console.log(d.get());
+    console.log(d.add());
   }
 }
 

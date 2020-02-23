@@ -1,7 +1,7 @@
 const MySQL = require("../../core/mysql");
 
 class User extends MySQL {
-  attribs = {
+  attr = {
     id: "-",
     firstname: "-",
     lastname: "-"
@@ -11,26 +11,28 @@ class User extends MySQL {
     super("users");
   }
 
-  get(obj = {}) {
-    return this.read(obj);
+  get(query = {}) {
+    return this.read(query);
   }
 
   add() {
-    return this.create(filter(this.attribs));
+    return this.create(this.filter(this.attr));
   }
 
-  update() {}
+  update(query = {}) {
+    return this.modify(this.filter(this.attr), query);
+  }
 
   filter() {
-    let new_attribs = {};
+    let new_attr = {};
 
-    Object.entries(this.attribs).forEach(([key, value]) => {
+    Object.entries(this.attr).forEach(([key, value]) => {
       if (value != "-") {
-        new_attribs[key] = value;
+        new_attr[key] = value;
       }
     });
 
-    return new_attribs;
+    return new_attr;
   }
 }
 

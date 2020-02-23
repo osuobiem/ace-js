@@ -56,25 +56,30 @@ class MySQL {
     return this.query;
   }
 
-  create(query_object) {
+  /**
+   * Compose and handle data creation related queries
+   *
+   * @param {object} data
+   */
+  create(data) {
     let c = 1;
 
     this.query = `INSERT INTO ${this.table} `;
     let fields = "";
     let values = "";
 
-    Object.entries(query_object).forEach(([key, value]) => {
-      if (c == this.count(query_object)) {
-        fields += `'${key}') `;
+    Object.entries(data).forEach(([key, value]) => {
+      if (c == this.count(data)) {
+        fields += `${key}) `;
         values += this.getType(value) == "number" ? `${value})` : `'${value}')`;
       } else if (c == 1) {
-        fields += `('${key}', `;
+        fields += `(${key}, `;
         values +=
           this.getType(value) == "number"
             ? `VALUES (${value}, `
             : `VALUES ('${value}', `;
       } else {
-        fields += `'${key}', `;
+        fields += `${key}, `;
         values +=
           this.getType(value) == "number" ? `${value}, ` : `'${value}', `;
       }
@@ -83,6 +88,37 @@ class MySQL {
     });
 
     this.query += fields + values;
+    return this.query;
+  }
+
+  /**
+   * Compose and handle data update related queries
+   *
+   * @param {object} data
+   * @param {object} query
+   */
+  modify(data, query = {}) {
+    let c = 1;
+
+    this.query = `UPDATE ${this.table} SET `;
+
+    Object.entries(data).forEach(([key, value]) => {
+      if (c == this.count(data)) {
+        value = this.getType(value) == "number" ? `${value}` : `'${value}'`;
+        this.query += `${key} = ${value}`;
+      } else {
+        value = this.getType(value) == "number" ? `${value}` : `'${value}'`;
+        this.query += `${key} = ${value}, `;
+      }
+
+      c++;
+    });
+
+    if (this.count(query) > 0) {
+      this.query += " WHERE";
+      this.traverse(query);
+    }
+
     return this.query;
   }
 
