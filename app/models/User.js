@@ -10,4 +10,4 @@ class User {
   }
 }
 
-module.exports = PModel;
+module.exports = User;

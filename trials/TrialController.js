@@ -6,11 +6,12 @@ class TrialController {
       fields: ["id", "firstname", "lastname"],
       id: 3,
       $and: {
-        firstname: "Gabriel",
-        $or: {
-          lastname: "tanz"
-        }
-      }
+        firstname: "Gabriel"
+      },
+      $ord: {
+        lastname: "ASC"
+      },
+      $lim: 2
     };
     let d = new Model();
     console.log(d.get(f));

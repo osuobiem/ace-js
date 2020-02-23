@@ -14,7 +14,9 @@ class MySQL {
     $gt: ">",
     $lt: "<",
     $gte: ">=",
-    $lte: "<="
+    $lte: "<=",
+    $lim: "LIMIT",
+    $ord: "ORDER BY"
   };
 
   constructor(obj) {
@@ -86,7 +88,11 @@ class MySQL {
             this.query += ` ${key}`;
             this.traverse(value);
           } else {
-            this.query += ` ${key} = ${value}`;
+            if (value == "ASC" || value == "DESC") {
+              this.query += ` ${key} ${value}`;
+            } else {
+              this.query += ` ${key} = ${value}`;
+            }
           }
         }
       });
@@ -119,4 +125,4 @@ class MySQL {
   }
 }
 
-module.exports = Parser;
+module.exports = MySQL;
