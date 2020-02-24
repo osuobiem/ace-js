@@ -79,7 +79,7 @@ class MySQL {
       this.traverse(query_object);
     }
 
-    return await this.exec();
+    return await this.query;
   }
 
   /**

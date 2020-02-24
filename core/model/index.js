@@ -14,27 +14,15 @@ class Model extends Database {
   }
 
   async add() {
-    return await this.create(this.filter(this.attr));
+    return await this.create(this.attr);
   }
 
   async update(query = {}) {
-    return await this.modify(this.filter(this.attr), query);
+    return await this.modify(this.attr, query);
   }
 
   async delete(query = {}) {
     return await this.remove(query);
-  }
-
-  filter() {
-    let new_attr = {};
-
-    Object.entries(this.attr).forEach(([key, value]) => {
-      if (value != "-") {
-        new_attr[key] = value;
-      }
-    });
-
-    return new_attr;
   }
 }
 
