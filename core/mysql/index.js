@@ -75,8 +75,7 @@ class MySQL {
         this.query += `* FROM ${this.table}`;
       }
 
-      this.query += " WHERE";
-      this.traverse(query_object);
+      this.compose(query_object);
     }
 
     return await this.query;
@@ -157,12 +156,22 @@ class MySQL {
   async remove(query = {}) {
     this.query = `DELETE FROM ${this.table}`;
 
-    if (this.count(query) > 0) {
-      this.query += " WHERE";
-      this.traverse(query);
-    }
+    this.count(query) > 0 ? this.traverse(query) : "";
 
     return await this.exec();
+  }
+
+  /**
+   * Compose sql query from query object
+   *
+   * @param {obj} obj
+   */
+  compose(obj) {
+    if (obj.$ext && this.count(obj) > 1) {
+      this.query += " WHERE";
+    }
+
+    this.traverse(obj);
   }
 
   /**
@@ -170,6 +179,14 @@ class MySQL {
    * @param {object} obj
    */
   traverse(obj) {
+    let ext = {};
+
+    if (obj.$ext) {
+      ext = obj.$ext;
+
+      delete obj.$ext;
+    }
+
     if (this.count(obj) > 0) {
       Object.entries(obj).forEach(([key, value]) => {
         if (this.reserved[key]) {
@@ -184,17 +201,41 @@ class MySQL {
             this.query += ` ${key}`;
             this.traverse(value);
           } else {
-            if (value == "ASC" || value == "DESC") {
-              this.query += ` ${key} ${value}`;
-            } else {
-              value =
-                this.getType(value) == "number" ? `${value}` : `'${value}'`;
-              this.query += ` ${key} = ${value}`;
-            }
+            value = this.getType(value) == "number" ? `${value}` : `'${value}'`;
+            this.query += ` ${key} = ${value}`;
           }
         }
       });
     }
+
+    if (ext) {
+      this.traverseExt(ext);
+    }
+  }
+
+  /**
+   * Traverse external query object. Ex; LIMIT, ORDER BY, etc
+   *
+   * @param {object} obj
+   */
+  traverseExt(obj) {
+    Object.entries(obj).forEach(([key, value]) => {
+      if (this.reserved[key]) {
+        if (this.getType(value) == "object") {
+          this.query += ` ${this.reserved[key]}`;
+          this.traverseExt(value);
+        } else {
+          this.query += ` ${this.reserved[key]} ${value}`;
+        }
+      } else {
+        if (this.getType(value) == "object") {
+          this.query += ` ${key}`;
+          this.traverseExt(value);
+        } else {
+          this.query += ` ${key} ${value}`;
+        }
+      }
+    });
   }
 
   /**

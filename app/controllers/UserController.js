@@ -10,8 +10,11 @@ module.exports = {
       id: {
         $lt: 10
       },
-      $ord: {
-        firstname: "ASC"
+      $ext: {
+        $ord: {
+          firstname: "ASC"
+        },
+        $lim: 4
       }
     });
   },
