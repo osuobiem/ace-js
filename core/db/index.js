@@ -1,6 +1,6 @@
 const config = require("../config/database");
 
-const DB = require(`../${config.db.driver}`);
+const DB = require(`../${config.driver}`);
 
 class Database extends DB {
   constructor(table) {

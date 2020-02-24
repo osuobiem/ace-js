@@ -2,6 +2,8 @@
 
 const CORE = require("./core");
 
+let core = new CORE();
+
 class MySQL {
   query = "";
   table;
@@ -23,14 +25,32 @@ class MySQL {
   constructor(table) {
     this.table = table;
 
-    let mysql_core = new CORE();
-    mysql_core.connect();
+    core.connect();
+  }
+
+  /**
+   * Execute composed sql query
+   */
+  async exec() {
+    return new Promise((resolve, reject) => {
+      core.db.query(this.query, {}, (err, results, fields) => {
+        if (err) {
+          reject("An error occured. Could not continue!");
+          console.log(err);
+        }
+
+        resolve({
+          results,
+          fields
+        });
+      });
+    });
   }
 
   /**
    * Compose and handle data retrieval related queries
    */
-  read(query_object = {}) {
+  async read(query_object = {}) {
     if (this.count(query_object) < 1) {
       this.query = `SELECT * FROM ${this.table}`;
     } else {
@@ -58,7 +78,8 @@ class MySQL {
       this.query += " WHERE";
       this.traverse(query_object);
     }
-    return this.query;
+
+    return await this.exec();
   }
 
   /**
@@ -66,7 +87,7 @@ class MySQL {
    *
    * @param {object} data
    */
-  create(data) {
+  async create(data) {
     let c = 1;
 
     this.query = `INSERT INTO ${this.table} `;
@@ -93,7 +114,8 @@ class MySQL {
     });
 
     this.query += fields + values;
-    return this.query;
+
+    return await this.exec();
   }
 
   /**
@@ -102,7 +124,7 @@ class MySQL {
    * @param {object} data
    * @param {object} query
    */
-  modify(data, query = {}) {
+  async modify(data, query = {}) {
     let c = 1;
 
     this.query = `UPDATE ${this.table} SET `;
@@ -124,7 +146,7 @@ class MySQL {
       this.traverse(query);
     }
 
-    return this.query;
+    return await this.exec();
   }
 
   /**
@@ -132,7 +154,7 @@ class MySQL {
    *
    * @param {object} query
    */
-  remove(query = {}) {
+  async remove(query = {}) {
     this.query = `DELETE FROM ${this.table}`;
 
     if (this.count(query) > 0) {
@@ -140,7 +162,7 @@ class MySQL {
       this.traverse(query);
     }
 
-    return this.query;
+    return await this.exec();
   }
 
   /**

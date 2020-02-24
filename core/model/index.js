@@ -9,20 +9,20 @@ class Model extends Database {
     super(table);
   }
 
-  get(query = {}) {
-    return this.read(query);
+  async get(query = {}) {
+    return await this.read(query);
   }
 
-  add() {
-    return this.create(this.filter(this.attr));
+  async add() {
+    return await this.create(this.filter(this.attr));
   }
 
-  update(query = {}) {
-    return this.modify(this.filter(this.attr), query);
+  async update(query = {}) {
+    return await this.modify(this.filter(this.attr), query);
   }
 
-  delete(query = {}) {
-    return this.remove(query);
+  async delete(query = {}) {
+    return await this.remove(query);
   }
 
   filter() {
