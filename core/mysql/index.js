@@ -78,7 +78,7 @@ class MySQL {
       this.compose(query_object);
     }
 
-    return await this.query;
+    return await this.exec();
   }
 
   /**
