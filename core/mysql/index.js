@@ -166,6 +166,8 @@ class MySQL {
   compose(obj) {
     if (obj.$ext && this.count(obj) > 1) {
       this.query += " WHERE";
+    } else if (!obj.$ext && this.count(obj) > 1) {
+      this.query += " WHERE";
     }
 
     this.traverse(obj);
