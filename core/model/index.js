@@ -22,7 +22,7 @@ class Model extends Database {
    * Create new database record
    */
   async add() {
-    return await this.create(this.attr);
+    return await this.create(this.filter(this.attr));
   }
 
   /**
@@ -41,6 +41,21 @@ class Model extends Database {
    */
   async delete(query = {}) {
     return await this.remove(query);
+  }
+
+  /**
+   * Filter out empty values
+   */
+  filter() {
+    let new_attr = {};
+
+    Object.entries(this.attr).forEach(([key, value]) => {
+      if (value.length > 0) {
+        new_attr[key] = value;
+      }
+    });
+
+    return new_attr;
   }
 }
 
