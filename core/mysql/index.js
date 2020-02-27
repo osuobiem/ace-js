@@ -39,10 +39,7 @@ class MySQL {
           console.log(err);
         }
 
-        resolve({
-          results,
-          fields
-        });
+        resolve(results);
       });
     });
   }
