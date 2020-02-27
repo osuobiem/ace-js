@@ -164,9 +164,9 @@ class MySQL {
    * @param {obj} obj
    */
   compose(obj) {
-    if (obj.$ext && this.count(obj) > 1) {
+    if (obj.$ext && this.count(obj) > 0) {
       this.query += " WHERE";
-    } else if (!obj.$ext && this.count(obj) > 1) {
+    } else if (!obj.$ext && this.count(obj) > 0) {
       this.query += " WHERE";
     }
 
