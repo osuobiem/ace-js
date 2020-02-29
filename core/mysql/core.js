@@ -6,6 +6,7 @@ const config = require("../config/database");
 
 class CORE {
   db;
+  connected = false;
 
   constructor() {
     this.db = mysql.createConnection({
@@ -17,10 +18,13 @@ class CORE {
   }
 
   connect() {
-    this.db.connect(err => {
-      if (err) throw err;
-      console.log(`Connected to ${config.database} MySQL database!`);
-    });
+    if (!this.connected) {
+      this.connected = true;
+      this.db.connect(err => {
+        if (err) throw err;
+        console.log(`Connected to ${config.database} MySQL database!`);
+      });
+    }
   }
 }
 
